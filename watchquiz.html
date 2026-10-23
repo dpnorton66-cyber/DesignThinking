@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Watch Quiz</title>
+<style>
+  :root{
+    --bg:#0e1116;
+    --panel:#161b23;
+    --panel-2:#1d242e;
+    --line:#2a3340;
+    --text:#e8ecf2;
+    --muted:#9aa6b6;
+    --gold:#c9a24a;
+    --gold-soft:rgba(201,162,74,.15);
+    --green:#4ea97b;
+    --green-soft:rgba(78,169,123,.15);
+    --red:#d1606a;
+    --red-soft:rgba(209,96,106,.15);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background:radial-gradient(1200px 600px at 50% -10%, #1a212b 0%, var(--bg) 60%);
+    color:var(--text);
+    font-family:"Georgia","Times New Roman",serif;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    padding:32px 16px 64px;
+  }
+  .wrap{width:100%;max-width:680px}
+
+  header{text-align:center;margin-bottom:28px}
+  .dial{
+    width:64px;height:64px;margin:0 auto 14px;border-radius:50%;
+    border:2px solid var(--gold);
+    position:relative;
+    background:radial-gradient(circle at 30% 25%, #222a35, #11151b);
+    box-shadow:0 0 0 6px rgba(201,162,74,.08);
+  }
+  .dial::before,.dial::after{
+    content:"";position:absolute;left:50%;top:50%;background:var(--gold);
+    transform-origin:bottom center;border-radius:2px;
+  }
+  .dial::before{width:2px;height:20px;margin-left:-1px;margin-top:-20px;transform:rotate(45deg)}
+  .dial::after{width:2px;height:14px;margin-left:-1px;margin-top:-14px;transform:rotate(-70deg)}
+  h1{margin:0;font-size:2rem;letter-spacing:.04em;font-weight:400}
+  .sub{color:var(--muted);font-size:.95rem;margin-top:8px;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+
+  .bar{height:4px;background:var(--panel-2);border-radius:99px;overflow:hidden;margin:22px 0 10px}
+  .bar span{display:block;height:100%;width:0;background:var(--gold);transition:width .35s ease}
+  .meta{
+    display:flex;justify-content:space-between;color:var(--muted);
+    font-size:.85rem;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;margin-bottom:18px
+  }
+
+  .card{
+    background:var(--panel);border:1px solid var(--line);border-radius:14px;
+    padding:26px 24px;box-shadow:0 18px 40px rgba(0,0,0,.35)
+  }
+  .q{font-size:1.25rem;line-height:1.5;margin:0 0 20px}
+
+  .opts{display:flex;flex-direction:column;gap:10px}
+  button.opt{
+    width:100%;text-align:left;cursor:pointer;
+    background:var(--panel-2);color:var(--text);
+    border:1px solid var(--line);border-radius:10px;
+    padding:14px 16px;font-size:1rem;font-family:inherit;
+    display:flex;gap:12px;align-items:flex-start;
+    transition:border-color .15s ease, background .15s ease, transform .08s ease;
+  }
+  button.opt:hover:not(:disabled){border-color:var(--gold);background:#222a35}
+  button.opt:active:not(:disabled){transform:translateY(1px)}
+  button.opt:disabled{cursor:default}
+  .key{
+    flex:0 0 auto;width:24px;height:24px;border-radius:50%;
+    border:1px solid var(--line);display:grid;place-items:center;
+    font-size:.78rem;font-family:system-ui,sans-serif;color:var(--muted)
+  }
+  .opt.correct{border-color:var(--green);background:var(--green-soft)}
+  .opt.correct .key{border-color:var(--green);color:var(--green)}
+  .opt.wrong{border-color:var(--red);background:var(--red-soft)}
+  .opt.wrong .key{border-color:var(--red);color:var(--red)}
+
+  .explain{
+    margin-top:18px;padding:14px 16px;border-left:3px solid var(--gold);
+    background:var(--gold-soft);border-radius:0 8px 8px 0;
+    font-size:.95rem;line-height:1.6;color:#dbe2ec;display:none
+  }
+  .explain.show{display:block}
+  .verdict{display:block;font-family:system-ui,sans-serif;font-size:.8rem;letter-spacing:.08em;
+    text-transform:uppercase;margin-bottom:6px;color:var(--gold)}
+
+  .next{
+    margin-top:20px;width:100%;padding:14px;border-radius:10px;cursor:pointer;
+    background:var(--gold);color:#17120a;border:0;font-size:1rem;font-family:inherit;
+    letter-spacing:.03em;display:none
+  }
+  .next.show{display:block}
+  .next:hover{background:#d8b25c}
+
+  .result{text-align:center}
+  .score{font-size:3.4rem;color:var(--gold);margin:6px 0}
+  .rank{font-size:1.15rem;margin-bottom:6px}
+  .blurb{color:var(--muted);font-size:.95rem;line-height:1.6;
+    font-family:system-ui,-apple-system,"Segoe UI",sans-serif;margin-bottom:22px}
+  .review{text-align:left;margin:24px 0;border-top:1px solid var(--line);padding-top:18px}
+  .review h3{font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
+    font-family:system-ui,sans-serif;font-weight:500;margin:0 0 12px}
+  .row{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:.92rem;line-height:1.45}
+  .row:last-child{border-bottom:0}
+  .mark{flex:0 0 auto;width:18px}
+  .ok{color:var(--green)}
+  .no{color:var(--red)}
+  .row small{display:block;color:var(--muted);font-family:system-ui,sans-serif;font-size:.82rem;margin-top:3px}
+  footer{text-align:center;color:var(--muted);font-size:.8rem;margin-top:24px;
+    font-family:system-ui,sans-serif}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="dial"></div>
+    <h1>The Watch Quiz</h1>
+    <p class="sub">Ten questions on wristwatches, from Bond to the Moon</p>
+  </header>
+
+  <div class="bar"><span id="bar"></span></div>
+  <div class="meta">
+    <span id="counter">Question 1 of 10</span>
+    <span id="running">Score 0</span>
+  </div>
+
+  <div class="card" id="card"></div>
+
+  <footer>Tap an answer to lock it in.</footer>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    q: "Since <em>GoldenEye</em> in 1995, which watch has James Bond worn on screen?",
+    options: ["Rolex Submariner", "Omega Seamaster", "TAG Heuer Monaco", "Breitling Navitimer"],
+    answer: 1,
+    why: "Bond switched to the Omega Seamaster for Pierce Brosnan's debut and has stayed with Omega ever since. Sean Connery's Bond wore a Rolex Submariner, which is why that one catches people out."
+  },
+  {
+    q: "How much did the most expensive watch ever sold at auction fetch?",
+    options: ["About $7 million", "About $17 million", "About $31 million", "About $90 million"],
+    answer: 2,
+    why: "The Patek Philippe Grandmaster Chime Ref. 6300A-010, a one-off in stainless steel, sold for roughly $31 million at the Only Watch charity auction in Geneva in 2019. The record still stands."
+  },
+  {
+    q: "In which year did the first digital watch go on sale?",
+    options: ["1962", "1972", "1979", "1984"],
+    answer: 1,
+    why: "The Hamilton Pulsar reached buyers in 1972 with a red LED display and a solid gold case. You had to press a button to light up the time, because the display drained the battery."
+  },
+  {
+    q: "Which watch was worn on the Moon during the Apollo 11 landing?",
+    options: ["Rolex GMT-Master", "Seiko 6139", "Omega Speedmaster Professional", "Bulova Accutron"],
+    answer: 2,
+    why: "NASA put several chronographs through brutal testing and only the Omega Speedmaster survived. It has been known as the Moonwatch ever since."
+  },
+  {
+    q: "Who invented the tourbillon, the rotating cage that counters the effect of gravity on a movement?",
+    options: ["Abraham-Louis Breguet", "Hans Wilsdorf", "Antoine LeCoultre", "John Harrison"],
+    answer: 0,
+    why: "Breguet patented the tourbillon in 1801. Hans Wilsdorf founded Rolex, and John Harrison solved the longitude problem with his marine chronometers."
+  },
+  {
+    q: "Which company launched the first quartz wristwatch, in 1969?",
+    options: ["Casio", "Seiko", "Swatch", "Citizen"],
+    answer: 1,
+    why: "The Seiko Astron went on sale in Tokyo on Christmas Day 1969. It cost about as much as a small car and started the quartz crisis that nearly finished the Swiss industry."
+  },
+  {
+    q: "The Jaeger-LeCoultre Reverso has a case that flips over. Which sport was that designed for?",
+    options: ["Polo", "Motor racing", "Sailing", "Boxing"],
+    answer: 0,
+    why: "British officers in India kept smashing their watch glass playing polo, so in 1931 the Reverso was given a case that swivels to hide the dial behind a solid metal back."
+  },
+  {
+    q: "Who designed the Audemars Piguet Royal Oak, launched in 1972?",
+    options: ["Gérald Genta", "Jack Heuer", "Gino Macaluso", "Hans Wilsdorf"],
+    answer: 0,
+    why: "Genta is said to have drawn it in a single night, taking the octagonal bezel and its eight exposed screws from an old diver's helmet. He went on to design the Patek Philippe Nautilus as well."
+  },
+  {
+    q: "In watchmaking, what is a \"complication\"?",
+    options: [
+      "A fault that stops the watch running",
+      "Any function beyond telling the time",
+      "A watch made from more than one metal",
+      "The gap between a watch's stated and actual accuracy"
+    ],
+    answer: 1,
+    why: "A complication is any added function: a date, a chronograph, a moon phase, a perpetual calendar, a minute repeater. The more of them a watch has, the grander the complication."
+  },
+  {
+    q: "Why did the first Royal Oak shock the watch trade in 1972?",
+    options: [
+      "It had no hands",
+      "It was stainless steel but cost more than most gold watches",
+      "It was the first watch sold without a warranty",
+      "It was the first Swiss watch made outside Switzerland"
+    ],
+    answer: 1,
+    why: "Audemars Piguet priced a steel sports watch above gold dress watches, which buyers at the time thought absurd. It sold slowly at first and then became the model that defined the luxury steel sports watch."
+  }
+];
+
+const RANKS = [
+  { min: 10, title: "Master Watchmaker", blurb: "A perfect run. You either collect watches or you have been reading about them for years." },
+  { min: 8,  title: "Serious Collector", blurb: "Strong knowledge, with only a couple of gaps. The Moon and the Channel would have been proud." },
+  { min: 6,  title: "Keen Enthusiast",  blurb: "A solid showing. You know the big names and the big stories." },
+  { min: 4,  title: "Casual Wearer",    blurb: "Enough to hold your own in conversation, and plenty left to discover." },
+  { min: 0,  title: "Phone Timekeeper", blurb: "Nothing wrong with checking the time on your phone. But there is a whole world on the wrist." }
+];
+
+const LETTERS = ["A","B","C","D"];
+let index = 0, score = 0, locked = false;
+const results = [];
+
+const card = document.getElementById("card");
+const bar = document.getElementById("bar");
+const counter = document.getElementById("counter");
+const running = document.getElementById("running");
+
+function render() {
+  const item = QUESTIONS[index];
+  locked = false;
+  counter.textContent = "Question " + (index + 1) + " of " + QUESTIONS.length;
+  running.textContent = "Score " + score;
+  bar.style.width = (index / QUESTIONS.length * 100) + "%";
+
+  card.innerHTML =
+    '<p class="q">' + item.q + '</p>' +
+    '<div class="opts">' +
+      item.options.map(function(opt, i) {
+        return '<button class="opt" data-i="' + i + '">' +
+                 '<span class="key">' + LETTERS[i] + '</span><span>' + opt + '</span>' +
+               '</button>';
+      }).join("") +
+    '</div>' +
+    '<div class="explain" id="explain"></div>' +
+    '<button class="next" id="next"></button>';
+
+  card.querySelectorAll(".opt").forEach(function(btn) {
+    btn.addEventListener("click", function() { choose(parseInt(btn.dataset.i, 10)); });
+  });
+  document.getElementById("next").addEventListener("click", advance);
+}
+
+function choose(picked) {
+  if (locked) return;
+  locked = true;
+
+  const item = QUESTIONS[index];
+  const right = picked === item.answer;
+  if (right) score++;
+  results.push({ q: item.q, right: right, correct: item.options[item.answer], picked: item.options[picked] });
+
+  card.querySelectorAll(".opt").forEach(function(btn) {
+    const i = parseInt(btn.dataset.i, 10);
+    btn.disabled = true;
+    if (i === item.answer) btn.classList.add("correct");
+    else if (i === picked) btn.classList.add("wrong");
+  });
+
+  const explain = document.getElementById("explain");
+  explain.innerHTML = '<span class="verdict">' + (right ? "Correct" : "Not this time") + '</span>' + item.why;
+  explain.classList.add("show");
+
+  const next = document.getElementById("next");
+  next.textContent = index === QUESTIONS.length - 1 ? "See your result" : "Next question";
+  next.classList.add("show");
+
+  running.textContent = "Score " + score;
+}
+
+function advance() {
+  index++;
+  if (index < QUESTIONS.length) render();
+  else finish();
+}
+
+function finish() {
+  bar.style.width = "100%";
+  counter.textContent = "Complete";
+  running.textContent = "Score " + score;
+
+  const rank = RANKS.find(function(r) { return score >= r.min; });
+
+  card.innerHTML =
+    '<div class="result">' +
+      '<div class="score">' + score + " / " + QUESTIONS.length + '</div>' +
+      '<div class="rank">' + rank.title + '</div>' +
+      '<p class="blurb">' + rank.blurb + '</p>' +
+      '<div class="review"><h3>Your answers</h3>' +
+        results.map(function(r, i) {
+          const strip = r.q.replace(/<[^>]+>/g, "");
+          return '<div class="row">' +
+                   '<span class="mark ' + (r.right ? "ok" : "no") + '">' + (r.right ? "&#10003;" : "&#10007;") + '</span>' +
+                   '<span>' + (i + 1) + ". " + strip +
+                     (r.right ? "" : '<small>You said ' + r.picked + ". Answer: " + r.correct + '.</small>') +
+                   '</span>' +
+                 '</div>';
+        }).join("") +
+      '</div>' +
+      '<button class="next show" id="again">Play again</button>' +
+    '</div>';
+
+  document.getElementById("again").addEventListener("click", function() {
+    index = 0; score = 0; results.length = 0; render();
+  });
+}
+
+render();
+</script>
+</body>
+</html>
