@@ -1,0 +1,598 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>The Levreau Decision</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: one centred dossier column — stage map, meters, evidence wall, decision card, closing report. */
+:root{
+  --paper:#F0EEEA; --card:#FFFFFF; --ink:#211C18; --ink-soft:#6B615A;
+  --rule:#DBD5CD; --accent:#7A5230; --accent-soft:#F0E6DC;
+  --amber:#8A6A1E; --alert:#95392F; --shade:#F8F6F3;
+  --display:"Newsreader",Georgia,"Times New Roman",serif;
+  --body:"Public Sans","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#141110; --card:#1E1A17; --ink:#EDE7E0; --ink-soft:#AC9F94;
+  --rule:#352F2A; --accent:#C99163; --accent-soft:#2B211A;
+  --amber:#D7AC51; --alert:#DF8275; --shade:#191513; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --paper:#141110; --card:#1E1A17; --ink:#EDE7E0; --ink-soft:#AC9F94;
+  --rule:#352F2A; --accent:#C99163; --accent-soft:#2B211A;
+  --amber:#D7AC51; --alert:#DF8275; --shade:#191513; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:24px 56px;}
+.wrap{max-width:46rem;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.eyebrow{font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);margin:0}
+h1{font-family:var(--display);font-weight:600;font-size:clamp(1.9rem,5.5vw,2.6rem);line-height:1.1;margin:.2em 0 0;text-wrap:balance}
+h2{font-family:var(--display);font-weight:600;font-size:clamp(1.3rem,3.6vw,1.6rem);line-height:1.2;margin:0;text-wrap:balance}
+h3{font-family:var(--body);font-weight:600;font-size:1rem;margin:0}
+p{margin:0}
+.lede{font-size:1.05rem;color:var(--ink-soft)}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:4px;padding:22px;display:flex;flex-direction:column;gap:16px}
+.rule{height:1px;background:var(--rule);border:0;margin:0}
+.spc{height:16px}
+.spc-l{height:20px}
+.map{display:flex;gap:6px;flex-wrap:wrap}
+.map div{flex:1 1 5.4rem;min-width:0;display:flex;flex-direction:column;gap:5px}
+.map s{display:block;height:4px;border-radius:2px;background:var(--rule);text-decoration:none}
+.map span{font-family:var(--mono);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.map div.done s{background:var(--accent)}
+.map div.now s{background:var(--ink)}
+.map div.now span{color:var(--ink);font-weight:600}
+.meters{display:flex;flex-wrap:wrap;gap:12px}
+.meter{flex:1 1 180px;min-width:0;background:var(--card);border:1px solid var(--rule);border-radius:4px;padding:12px 14px;display:flex;flex-direction:column;gap:7px}
+.meter .k{font-family:var(--mono);font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft)}
+.meter .v{font-family:var(--mono);font-size:1.25rem;font-weight:600;font-variant-numeric:tabular-nums}
+.meter .v.over{color:var(--alert)}
+.bar{height:5px;background:var(--shade);border:1px solid var(--rule);border-radius:3px;overflow:hidden}
+.bar>span{display:block;height:100%;background:var(--amber);width:0;transition:width .45s ease}
+.bar.over>span{background:var(--alert)}
+.pips{display:flex;gap:5px}
+.pips i{width:13px;height:13px;border-radius:50%;border:1px solid var(--rule);background:var(--shade);display:block}
+.pips i.on{background:var(--accent);border-color:var(--accent)}
+.wall{background:var(--card);border:1px solid var(--rule);border-radius:4px;padding:16px 18px;display:flex;flex-direction:column;gap:14px}
+.wall>.k{font-family:var(--mono);font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft)}
+.wall .empty{font-size:.9rem;color:var(--ink-soft)}
+.pg{display:flex;flex-wrap:wrap;gap:14px}
+.pgcol{flex:1 1 220px;min-width:0;display:flex;flex-direction:column;gap:7px}
+.pgcol>span.h{font-family:var(--mono);font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);
+  border-bottom:1px solid var(--rule);padding-bottom:5px}
+.pgcol ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:7px}
+.pgcol li{font-size:.9rem;display:flex;gap:8px;align-items:flex-start}
+.pgcol li em{font-style:normal;font-family:var(--mono);font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;
+  border:1px solid var(--rule);border-radius:2px;padding:1px 5px;color:var(--ink-soft);white-space:nowrap;margin-top:3px}
+.pgcol li em.obs{color:var(--accent);border-color:var(--accent)}
+.pgcol li em.sta{color:var(--amber);border-color:var(--amber)}
+.pgcol li em.ind{color:var(--alert);border-color:var(--alert)}
+.hmw{border-left:3px solid var(--accent);background:var(--shade);padding:11px 14px;border-radius:0 4px 4px 0;font-size:.95rem}
+.hmw span{font-family:var(--mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);display:block;margin-bottom:4px}
+.purpose{font-size:.9rem;color:var(--ink-soft);border-left:3px solid var(--rule);padding-left:12px}
+.purpose b{color:var(--ink)}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{display:flex;gap:14px;align-items:flex-start;width:100%;text-align:left;font:inherit;color:inherit;
+  background:var(--card);border:1px solid var(--rule);border-radius:4px;padding:14px 16px;cursor:pointer;transition:border-color .15s,background .15s}
+.opt:hover:not(:disabled){border-color:var(--accent);background:var(--accent-soft)}
+.opt:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.opt .tag{font-family:var(--mono);font-size:.8rem;font-weight:600;color:var(--ink-soft);padding-top:1px}
+.opt .txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.opt .method{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+.opt .cost{font-family:var(--mono);font-size:.72rem;color:var(--ink-soft);white-space:nowrap;padding-top:3px;font-variant-numeric:tabular-nums}
+.opt:disabled{cursor:not-allowed;opacity:.72;background:var(--shade)}
+.locked{font-size:.82rem;color:var(--alert);margin-top:4px;display:block}
+.conseq{border-left:3px solid var(--accent);background:var(--shade);padding:16px 18px;display:flex;flex-direction:column;gap:12px;border-radius:0 4px 4px 0}
+.conseq .k{font-family:var(--mono);font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft)}
+.principle{font-size:.9rem;color:var(--ink-soft);border-top:1px solid var(--rule);padding-top:10px}
+.principle em{font-style:normal;font-weight:600;color:var(--ink)}
+button.go{font:inherit;font-weight:600;background:var(--ink);color:var(--paper);border:1px solid var(--ink);
+  border-radius:4px;padding:11px 20px;cursor:pointer;align-self:flex-start}
+button.go:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+button.go:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button.ghost{font:inherit;font-weight:600;background:transparent;color:var(--ink);border:1px solid var(--rule);
+  border-radius:4px;padding:11px 20px;cursor:pointer;align-self:flex-start}
+button.ghost:hover{border-color:var(--accent);color:var(--accent)}
+button.ghost:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.verdict{border:1px solid var(--rule);border-top:4px solid var(--accent);border-radius:4px;background:var(--card);padding:22px;display:flex;flex-direction:column;gap:12px}
+.verdict.poor{border-top-color:var(--alert)}
+.verdict.mixed{border-top-color:var(--amber)}
+.grade{font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
+.figures{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
+.fig{flex:1 1 140px;min-width:0;border:1px solid var(--rule);border-radius:4px;padding:10px 12px;background:var(--shade)}
+.fig .n{font-family:var(--mono);font-size:1.3rem;font-weight:600;font-variant-numeric:tabular-nums;display:block}
+.fig .l{font-size:.78rem;color:var(--ink-soft)}
+.review{display:flex;flex-direction:column}
+.rrow{display:flex;gap:14px;padding:13px 0;border-top:1px solid var(--rule);align-items:flex-start}
+.rrow:first-child{border-top:0}
+.rrow .n{font-family:var(--mono);font-size:.78rem;color:var(--ink-soft);min-width:1.6rem;padding-top:2px}
+.rrow .b{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.rrow .st{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+.rrow .ch{font-weight:500}
+.rrow .mi{font-size:.88rem;color:var(--ink-soft)}
+.mark{font-family:var(--mono);font-size:.78rem;padding-top:2px;white-space:nowrap}
+.mark.ok{color:var(--accent)}
+.mark.no{color:var(--alert)}
+.mark.part{color:var(--amber)}
+details{border:1px solid var(--rule);border-radius:4px;background:var(--card)}
+summary{cursor:pointer;padding:14px 18px;font-weight:600;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::after{content:" +";font-family:var(--mono);color:var(--ink-soft)}
+details[open] summary::after{content:" \2212"}
+details .inner{padding:0 18px 18px;display:flex;flex-direction:column;gap:12px;font-size:.92rem}
+details ul{margin:0;padding-left:1.1rem;display:flex;flex-direction:column;gap:6px}
+details ol{margin:0;padding-left:1.3rem;display:flex;flex-direction:column;gap:6px}
+.tl{display:flex;gap:10px;font-family:var(--mono);font-size:.8rem;border-top:1px solid var(--rule);padding-top:8px}
+.tl span:first-child{color:var(--ink-soft);min-width:5.5rem}
+.trail{display:flex;flex-direction:column;gap:8px}
+.trail div{display:flex;gap:10px;font-size:.9rem;align-items:baseline;flex-wrap:wrap}
+.trail .t{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);min-width:7rem}
+footer{font-size:.8rem;color:var(--ink-soft);text-align:center;padding-top:8px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Maison Levreau &middot; Client Experience</p>
+    <h1>The Levreau Decision</h1>
+  </header>
+
+  <section id="s-brief">
+    <div class="card">
+      <h2>The situation</h2>
+      <p class="lede">Maison Levreau makes the Alcine bag to order, in the boutique and online.</p>
+      <p>Last year the range was extended. Three sizes, seven leathers, four hardware finishes and twelve linings now give 1,008 combinations, up from 240.</p>
+      <p>Since then, completed orders through the configurator have fallen from 41 per cent of sessions to 19 per cent. Boutique appointments run twenty minutes longer than they used to. Clients keep saying the same thing to advisors, and the advisors keep writing it in their notes: there is too much to choose from, and they cannot tell which combinations go together.</p>
+      <p>Nobody has said what to do about it. The executive committee wants it addressed within <strong>16 working days</strong>.</p>
+      <hr class="rule">
+      <p class="principle">You will work through five stages in order: empathise, define, ideate, prototype, test. One decision at each, with four routes open to you every time. The solution is not in the brief, because there is no solution in the brief.</p>
+      <button class="go" id="start">Take the project</button>
+    </div>
+  </section>
+
+  <section id="s-play" hidden>
+    <div class="map" id="m-map"></div>
+    <div class="spc"></div>
+    <div class="meters">
+      <div class="meter">
+        <span class="k">Days used</span>
+        <span class="v" id="m-days">0 / 16</span>
+        <span class="bar" id="m-bar"><span></span></span>
+      </div>
+      <div class="meter">
+        <span class="k">Strength of evidence</span>
+        <span class="v" id="m-eviv">None</span>
+        <span class="pips" id="m-pips"></span>
+      </div>
+    </div>
+    <div class="spc"></div>
+    <div class="wall" id="wall">
+      <span class="k">Evidence wall</span>
+      <div id="wall-body"></div>
+    </div>
+    <div class="spc"></div>
+    <div class="card">
+      <p class="eyebrow" id="st-label"></p>
+      <h2 id="st-title"></h2>
+      <p class="purpose" id="st-purpose"></p>
+      <p id="st-body"></p>
+      <div class="opts" id="st-opts"></div>
+      <div id="st-conseq" hidden></div>
+    </div>
+  </section>
+
+  <section id="s-result" hidden>
+    <div class="verdict" id="v-box">
+      <span class="grade" id="v-grade"></span>
+      <h2 id="v-title"></h2>
+      <p id="v-body"></p>
+      <div class="figures" id="v-figs"></div>
+    </div>
+    <div class="spc-l"></div>
+    <div class="card">
+      <h2>Your evidence wall at the committee review</h2>
+      <div id="v-wall"></div>
+    </div>
+    <div class="spc-l"></div>
+    <div class="card">
+      <h2>Your five decisions</h2>
+      <div class="review" id="v-review"></div>
+    </div>
+    <div class="spc-l"></div>
+    <details id="v-missed">
+      <summary>What you did not find out</summary>
+      <div class="inner" id="v-missed-in"></div>
+    </details>
+    <div class="spc-l"></div>
+    <details>
+      <summary>Stage by stage: what you did, and what the stage is for</summary>
+      <div class="inner"><div class="trail" id="v-trail"></div></div>
+    </details>
+    <div class="spc-l"></div>
+    <details>
+      <summary>The five stages, and where test sends you back to</summary>
+      <div class="inner">
+        <ol>
+          <li><strong>Empathise.</strong> Understand the people you are designing for by observing them and spending time in their situation. Record what you find as pains and gains, and mark which were observed and which were only stated.</li>
+          <li><strong>Define.</strong> Synthesise what you saw into one point of view: who, what they need, and the insight behind it. Written as a "how might we" statement.</li>
+          <li><strong>Ideate.</strong> Generate a wide range of options so you get past the obvious ones. Judge them afterwards, against the statement.</li>
+          <li><strong>Prototype.</strong> Turn an idea into something people can experience, cheaply enough that you can afford to be wrong.</li>
+          <li><strong>Test.</strong> Try it with the people who have the problem, observe, and use what you learn to refine the prototype and revisit your understanding.</li>
+        </ol>
+        <hr class="rule">
+        <h3>The stages are not a one-way street</h3>
+        <p>Test does not end the process. What you learn there sends you back: to prototype if the idea is right and the execution is wrong, to ideate if the idea is wrong, and to empathise if the statement itself was wrong. This simulation runs the loop once so that it fits in a workshop. Real work goes round it several times.</p>
+        <hr class="rule">
+        <h3>Three tests for a "how might we"</h3>
+        <ul>
+          <li><strong>No solution inside it.</strong> If the statement names the answer, the team has nothing left to do.</li>
+          <li><strong>Narrow enough to act on.</strong> If it would justify any option, it will not help you choose between them.</li>
+          <li><strong>Traceable to an observed pain or gain.</strong> Point at the line on the wall it came from.</li>
+        </ul>
+        <p class="principle">The answer already exists in the trade. A seasonal edit, a trunk show, a window: every house presents a chosen selection and keeps the rest of the range behind it. When the maison moved the range online it published the grid and left out the edit, which was the part doing the work.</p>
+      </div>
+    </details>
+    <div class="spc-l"></div>
+    <button class="ghost" id="again">Start again from the brief</button>
+  </section>
+
+  <footer>Fictional maison. Built for workshop use.</footer>
+</div>
+
+<script>
+var BUDGET = 16;
+var MAP = ["Empathise","Define","Ideate","Prototype","Test"];
+
+var WALLS = {
+  logs: {
+    pains: [["ind","Sixty-one per cent of sessions end at the lining step, which is step four of five."],
+            ["ind","Median time in the configurator has risen from six minutes to seventeen."]],
+    gains: [["ind","Fewer steps would shorten the session."]]
+  },
+  asked: {
+    pains: [["sta","Clients say there is too much choice and that it is hard to know what goes together."]],
+    gains: [["sta","Clients ask for fewer options and a simpler range."],
+            ["sta","Several suggest a three-dimensional view of the finished bag."]]
+  },
+  advisors: {
+    pains: [["obs","Advisors report that almost every client asks them what they would choose."],
+            ["sta","Advisors believe the range has grown too large, and say so firmly."]],
+    gains: [["sta","Advisors would like a shortlist of their own to show clients."]]
+  },
+  observed: {
+    pains: [["obs","Within two minutes of opening the swatch tray, the client asks the advisor what she would choose."],
+            ["obs","Clients worry about how the combination will look to other people. One says she does not want it to look as though she tried too hard."],
+            ["obs","Nothing signals that a combination is finished. There is no point at which choosing is allowed to stop."],
+            ["obs","Clients photograph the swatch card and send it to a daughter or a friend before deciding, then leave without ordering."]],
+    gains: [["obs","Knowing the combination is one the house itself would stand behind."],
+            ["obs","Something to show to another person before committing."],
+            ["obs","Being able to leave and come back without starting the choice again."]]
+  }
+};
+
+var CONCEPTS = {
+  selections:"Twelve named combinations chosen and signed off by the atelier, shown first, with the full range still available behind them. Each one can be saved and sent to someone else.",
+  cut:"Reduce the range from 1,008 combinations to 60.",
+  speed:"A guided questionnaire that narrows the range to three options in ninety seconds.",
+  copy:"A copy of a rival maison's monogram preview tool.",
+  scattered:"A three-dimensional viewer for the configurator. Nothing to score the ideas against, so the most enthusiastic view won.",
+  renderer:"A rebuilt configurator with a real-time three-dimensional render of the finished bag."
+};
+
+var STAGES = [
+  {
+    label:"Decision 1 of 5", stage:"Empathise", title:"How do you find out what is actually happening?",
+    purpose:"<b>What this stage is for:</b> understanding the people you are designing for, by observing them and spending time in their situation. Not deciding anything yet.",
+    body:"You have a completion rate that halved and a complaint everyone can repeat. Four routes are open to you.",
+    principle:"Watch what people do, in the place where the decision happens. A complaint describes how something feels. It is not the same as the need underneath it.",
+    opts:[
+      { tag:"A", method:"Analytics review", text:"Pull twelve months of configurator analytics and find where sessions end.", days:2, ev:1, wall:"logs",
+        conseq:"A clean picture of where people stop and how long they take. It cannot tell you what the client was thinking about at the moment she closed the page, or who she was imagining looking at the finished bag. You conclude there are too many steps." },
+      { tag:"B", method:"Client questionnaire", text:"Send a questionnaire to 60 recent browsers and ask what would make it easier.", days:2, ev:1, wall:"asked",
+        conseq:"Clients are courteous and specific. They ask for fewer options, a simpler range and a three-dimensional view. You now have sixty opinions about solutions and nothing about the moment the decision gets abandoned." },
+      { tag:"C", method:"Interview the advisors", text:"Interview the twelve boutique advisors about what clients say and do.", days:3, ev:2, wall:"advisors",
+        conseq:"The advisors are sharp, experienced and generous with their time. They confirm that clients ask them what to choose. They also have a firm theory of their own, which is that the range is too big, and it colours everything they report. You have a careful account of the appointment, written by someone with a view, instead of the appointment itself." },
+      { tag:"D", method:"Observed appointments", text:"Sit in on twelve boutique appointments and six online sessions. Say nothing, then write up pains and gains.", days:5, ev:3, wall:"observed",
+        conseq:"Every client asks the advisor what she would choose, most within two minutes. Two photograph the swatch card and send it to someone before deciding. None of them runs out of options; they run out of permission. Four pains and three gains go on the wall, all of them observed." }
+    ]
+  },
+  {
+    label:"Decision 2 of 5", stage:"Define", title:"Which “how might we” do you take forward?",
+    purpose:"<b>What this stage is for:</b> turning what you saw into one point of view. Who the person is, what they need, and the insight behind it. Still no solutions.",
+    body:"Whatever you pick becomes the statement everything is scored against. Three of these four will not survive contact with the work.",
+    principle:"A usable statement names no solution, is written from the client's side rather than the maison's, is narrow enough to act on, and traces back to a pain you observed.",
+    opts:[
+      { tag:"A", method:"Solution already inside it", text:"How might we reduce the number of combinations we offer?", days:0, ev:0, hmwIdx:0,
+        hmw:"How might we reduce the number of combinations we offer?",
+        conseq:"The answer is in the question, so there is nothing left to decide. It also takes the clients' complaint at face value and promotes it straight to a specification." },
+      { tag:"B", method:"Too broad to act on", text:"How might we improve the client's experience of the configurator?", days:1, ev:0, hmwIdx:1,
+        hmw:"How might we improve the client's experience of the configurator?",
+        conseq:"Every idea passes. A new renderer passes, a shorter range passes, a redesigned swatch tray passes. A statement that justifies everything cannot help you choose between them." },
+      { tag:"C", method:"Written from the maison's side", text:"How might we shorten the time an appointment takes?", days:0, ev:0, hmwIdx:3,
+        hmw:"How might we shorten the time an appointment takes?",
+        conseq:"Specific and measurable, and about what the maison wants rather than what the client needs. A statement like this is satisfied by hurrying people, which in a house that sells unhurried attention is worse than doing nothing." },
+      { tag:"D", method:"Scoped to an observed pain", text:"How might we let a client see that a combination is one the house would stand behind, without taking choice away?", days:1, ev:1, right:true, hmwIdx:2,
+        hmw:"How might we let a client see that a combination is one the house would stand behind, without taking choice away?",
+        needEv:3, lock:"Locked. This traces to a pain nobody on your team observed first hand. No client said it, no analytics report contains it, and no advisor reported it that way.",
+        conseq:"It names no solution, it is narrow enough to score ideas against, and you can point at the line on the wall it came from. It also contradicts what clients asked for, which is why it needed observation to write." }
+    ]
+  },
+  {
+    label:"Decision 3 of 5", stage:"Ideate", title:"How do you get to options?",
+    purpose:"<b>What this stage is for:</b> generating a wide range of possible answers so you get past the obvious ones. This is the first stage at which a solution may legitimately appear.",
+    body:"The Creative Director has already said in two meetings that the range got away from them.",
+    principle:"Separate generating from judging. Quantity first, selection second, scored against the statement.",
+    opts:[
+      { tag:"A", method:"Take the Creative Director's view", text:"Cut the range back to sixty combinations. Take it forward.", days:0, q:0, concept:"cut",
+        conseq:"One option, no comparison, and it matches what clients said they wanted. It is also the fastest route to something the committee will recognise as decisive." },
+      { tag:"B", method:"Brainwriting, then dot vote", text:"Twenty ideas in half a day with no criticism allowed, then score them against the statement and dot vote the top three.", days:1, q:2, concept:"byhmw",
+        conseq:"" },
+      { tag:"C", method:"Defer to the expert", text:"Ask the digital lead which option to build.", days:1, q:0, concept:"renderer",
+        conseq:"One answer, quickly, from the person who knows the platform best and has never sat through an appointment. The option chosen needs a new rendering pipeline." },
+      { tag:"D", method:"Benchmark the competition", text:"Look at what three rival maisons do and take the best of it.", days:2, q:1, concept:"copy",
+        conseq:"You come back with a well-researched list of other houses' answers. Each was designed for a different client, a different range and a problem you have not seen inside. Benchmarking tells you what exists. It cannot tell you what your clients need." }
+    ]
+  },
+  {
+    label:"Decision 4 of 5", stage:"Prototype", title:"What do you make?",
+    purpose:"<b>What this stage is for:</b> turning the idea into something people can experience, cheaply enough that you can afford to be wrong about it.",
+    body:"Something has to exist before anyone can react to it. The question is how much, and who it has to be real for.",
+    principle:"Build the cheapest thing that answers the open question, and make it real for the person who has the problem.",
+    opts:[
+      { tag:"A", method:"Production build", text:"Build it into the live configurator and release it to a percentage of traffic.", days:9, q:1,
+        conseq:"It works. It took nine days, the team is attached to it, and changing it now means another release. You built the answer before you checked the question." },
+      { tag:"B", method:"Paper prototype", text:"Mock up the screens and show them to clients in the boutique.", days:1, q:2,
+        conseq:"Cheap and quick. Clients will tell you whether they understand the screen. They cannot tell you whether it changes what they do when it is their own money." },
+      { tag:"C", method:"Internal role-play", text:"Act it out in the office. Two colleagues play the client and the advisor.", days:1, q:1,
+        conseq:"Cheap, fast and comfortable. Your colleagues know the range, know what the card is for and are not spending four thousand pounds. They are the one group guaranteed not to hesitate where a client hesitates." },
+      { tag:"D", method:"Wizard of Oz", text:"Build nothing. For two weeks the boutiques deliver it by hand to 40 clients: a printed card, and the rest done by the advisor.", days:3, q:3,
+        conseq:"No code at all. Forty clients get something real, in a real appointment, with a real decision at the end of it. The advisors record what each client does next." }
+    ]
+  },
+  {
+    label:"Decision 5 of 5", stage:"Test", title:"How do you find out if it works?",
+    purpose:"<b>What this stage is for:</b> trying it with the people who have the problem, observing, and using what you learn to go back and refine.",
+    body:"The committee meets shortly. What you bring them depends on who you showed it to.",
+    principle:"Test with the people who have the problem. Numbers tell you whether something worked; watching tells you why.",
+    opts:[
+      { tag:"A", method:"Creative review", text:"Present it to the Creative Director and the committee.", days:1, q:0,
+        conseq:"They are pleased. You now know what the Creative Director thinks. You still know nothing about clients, and nothing that would send you back to an earlier stage." },
+      { tag:"B", method:"Silent observation", text:"Sit through eight appointments while clients use it, and say nothing unless asked.", days:3, q:3,
+        conseq:"Two clients hesitate at the same moment, which you would never have predicted. The silence is uncomfortable and it is the whole method: the moment the advisor explains the card, you have stopped measuring it." },
+      { tag:"C", method:"Release and measure", text:"Put it live on the website and read the analytics next month.", days:2, q:1,
+        conseq:"The analytics will be excellent, and they will arrive after the committee review. You will know what clients did, but not why, and too late to change anything." },
+      { tag:"D", method:"Controlled comparison", text:"Split the boutiques. Half present it, half do not, and compare what clients do.", days:3, q:2,
+        conseq:"A clean result you can defend in front of the committee, because the comparison group rules out everything else that happened that fortnight. It will tell you whether it worked. It will not tell you why, or what to change, so it cannot send you back to an earlier stage on its own." }
+    ]
+  }
+];
+
+var state;
+function reset(){ state = { i:0, days:0, ev:0, q:0, right:false, hmw:null, hmwIdx:-1, wall:null, concept:null, picks:[] }; }
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
+function tagName(t){ return t==="obs" ? "Observed" : (t==="sta" ? "Stated" : "Indirect"); }
+
+var BEST = [3,3,1,3,1];
+var PARTIAL = [[2],[],[3],[1,2],[3]];
+
+function wallHTML(){
+  var src = state.wall ? WALLS[state.wall] : null;
+  if (!src && !state.hmw) return '<p class="empty">Nothing on the wall yet. Whatever you gather at the empathise stage appears here, and it is all you will have to work from.</p>';
+  var h = "";
+  if (src){
+    h += '<div class="pg"><div class="pgcol"><span class="h">Pains</span><ul>' +
+      src.pains.map(function(p){ return '<li><em class="'+p[0]+'">'+tagName(p[0])+'</em><span>'+esc(p[1])+'</span></li>'; }).join("") +
+      '</ul></div><div class="pgcol"><span class="h">Gains</span><ul>' +
+      src.gains.map(function(p){ return '<li><em class="'+p[0]+'">'+tagName(p[0])+'</em><span>'+esc(p[1])+'</span></li>'; }).join("") +
+      '</ul></div></div>';
+  }
+  if (state.hmw) h += '<div class="hmw"><span>How might we</span>' + esc(state.hmw) + '</div>';
+  if (state.concept) h += '<div class="hmw"><span>Leading concept</span>' + esc(CONCEPTS[state.concept]) + '</div>';
+  return h;
+}
+
+function paint(){
+  var over = state.days > BUDGET;
+  var d = $("m-days");
+  d.textContent = state.days + " / " + BUDGET;
+  d.className = "v" + (over ? " over" : "");
+  var bar = $("m-bar");
+  bar.className = "bar" + (over ? " over" : "");
+  bar.firstElementChild.style.width = Math.min(100,(state.days/BUDGET)*100) + "%";
+  var names = ["None","Indirect","Partial","Observed","Observed"];
+  $("m-eviv").textContent = names[Math.min(4,state.ev)];
+  var pips = "";
+  for (var k=0;k<4;k++) pips += '<i class="'+(k<state.ev?"on":"")+'"></i>';
+  $("m-pips").innerHTML = pips;
+  $("m-map").innerHTML = MAP.map(function(n,j){
+    var cls = j < state.i ? "done" : (j === state.i ? "now" : "");
+    return '<div class="'+cls+'"><s></s><span>'+n+'</span></div>';
+  }).join("");
+  $("wall-body").innerHTML = wallHTML();
+}
+
+function renderStage(){
+  var s = STAGES[state.i];
+  $("st-label").textContent = "Stage " + (state.i+1) + " · " + s.stage + "  ·  " + s.label;
+  $("st-title").textContent = s.title;
+  $("st-purpose").innerHTML = s.purpose;
+  $("st-body").textContent = s.body;
+  $("st-conseq").hidden = true; $("st-conseq").innerHTML = "";
+  var box = $("st-opts"); box.innerHTML = ""; box.hidden = false;
+  s.opts.forEach(function(o, idx){
+    var locked = (o.needEv !== undefined && state.ev < o.needEv);
+    var b = document.createElement("button");
+    b.className = "opt"; b.type = "button"; b.disabled = locked;
+    b.innerHTML = '<span class="tag">'+o.tag+'</span><span class="txt">' +
+      '<span class="method">'+esc(o.method)+'</span><span>'+esc(o.text)+'</span>' +
+      (locked ? '<span class="locked">'+esc(o.lock)+'</span>' : '') +
+      '</span><span class="cost">'+o.days+(o.days===1?" day":" days")+'</span>';
+    b.addEventListener("click", function(){ choose(idx); });
+    box.appendChild(b);
+  });
+  paint();
+}
+
+function ideateOutcome(){
+  if (state.hmwIdx === 2) return { c:"selections", t:"Ideas four to seventeen are poor. Idea nineteen is a short set of combinations signed off by the atelier, shown first, with everything else still there behind them. Criticism was held back until all twenty were on the wall, so it survived long enough to be scored, and it scores highest against your statement." };
+  if (state.hmwIdx === 0) return { c:"cut", t:"Good technique, applied to a statement that already contained the answer. Twenty ideas, and every one is a different way of removing options. The session was run correctly and could only produce one kind of result." };
+  if (state.hmwIdx === 3) return { c:"speed", t:"Twenty ideas, scored honestly against a statement about appointment length. The winner is the one that gets to an answer fastest: a guided questionnaire that narrows the range in ninety seconds. The method worked. The statement asked for the wrong thing." };
+  return { c:"scattered", t:"Twenty ideas and nothing to score them against, because the statement justifies all of them equally. The dot vote becomes a popularity contest and the three-dimensional viewer wins on enthusiasm. Good technique cannot rescue a weak definition." };
+}
+
+function choose(idx){
+  var s = STAGES[state.i], o = s.opts[idx];
+  state.days += o.days; state.ev += (o.ev||0); state.q += (o.q||0);
+  if (o.right) state.right = true;
+  if (o.wall) state.wall = o.wall;
+  if (o.hmw) { state.hmw = o.hmw; state.hmwIdx = o.hmwIdx; }
+  var text = o.conseq;
+  if (o.concept === "byhmw"){ var r = ideateOutcome(); state.concept = r.c; text = r.t; }
+  else if (o.concept) state.concept = o.concept;
+  state.picks.push({ stage:s.stage, tag:o.tag, text:o.text, method:o.method, days:o.days, purpose:s.principle, idx:idx });
+
+  $("st-opts").hidden = true;
+  var last = (state.i === STAGES.length - 1);
+  var c = $("st-conseq");
+  c.innerHTML = '<div class="conseq"><span class="k">'+s.stage+' — what happens</span><p>'+esc(text)+'</p>' +
+    '<p class="principle"><em>Principle:</em> '+esc(s.principle)+'</p></div><div class="spc"></div>' +
+    '<button class="go" id="next">'+(last?"See the committee review":"Go to "+MAP[state.i+1])+'</button>';
+  c.hidden = false;
+  paint();
+  $("next").addEventListener("click", advance);
+  $("next").focus();
+}
+
+function advance(){
+  state.i++;
+  if (state.i >= STAGES.length) showResult();
+  else { renderStage(); window.scrollTo({top:0,behavior:"smooth"}); }
+}
+
+function showResult(){
+  $("s-play").hidden = true; $("s-result").hidden = false;
+  window.scrollTo({top:0,behavior:"smooth"});
+  var over = state.days > BUDGET;
+  var e0 = state.picks[0].idx, proto = state.picks[3].idx, test = state.picks[4].idx;
+  var con = state.concept;
+  var cls, grade, title, body, figs, pains;
+
+  if (con === "selections" && state.q >= 6 && !over){
+    cls=""; pains=4;
+    grade="Committee review · approved";
+    title="You gave the client permission, not fewer options";
+    body="You reach the committee on day "+state.days+". Of the forty clients shown the atelier card, twenty-three ordered within the appointment, against nine in the fortnight before. Average order value is unchanged and appointments are fourteen minutes shorter. The range stays at 1,008 combinations.";
+    figs=[["23 of 40","ordered in the appointment"],[pains+" of 4","observed pains addressed"],[state.days+" days","of "+BUDGET]];
+  } else if (con === "selections" && !over){
+    cls="mixed"; pains=2;
+    grade="Committee review · held over";
+    title="The right statement, answered on instinct";
+    body="Your statement survives the room. The evidence behind your solution does not. The committee accepts that clients are not short of choice, and asks you to come back with something you have put in front of them. You have spent "+state.days+" days of "+BUDGET+" and you are starting the test you should have run first.";
+    figs=[["Usable","how might we"],[pains+" of 4","observed pains addressed"],[state.days+" days","of "+BUDGET]];
+  } else if (con === "selections" && over){
+    cls="mixed"; pains=3;
+    grade="Committee review · missed";
+    title="Right statement, wrong pace";
+    body="You defined it correctly and then spent "+state.days+" days on a "+BUDGET+" day project. The committee met without you. The work is sound and nobody has seen it, which from the Creative Director's chair looks the same as no work at all.";
+    figs=[["Usable","how might we"],[(state.days-BUDGET)+" days","over budget"],["Not seen","by the committee"]];
+  } else if (con === "cut"){
+    cls="poor"; pains=1;
+    grade="Committee review · shipped";
+    title="The range is cut to sixty combinations";
+    body="Completion rises from 19 per cent to 24 per cent, because there is less to get through. Made-to-order revenue falls eleven per cent as clients move to stock pieces, and the maison has removed the thing it charged a premium for. Clients still ask the advisor what she would choose, because that was never a question about how many options there were.";
+    figs=[["24%","completion, up from 19"],["−11%","made-to-order revenue"],[pains+" of 4","observed pains addressed"]];
+  } else if (con === "speed"){
+    cls="poor"; pains=1;
+    grade="Committee review · shipped";
+    title="A guided questionnaire ships";
+    body="Appointments are nine minutes shorter and completion rises two points. Clients still ask the advisor what she would choose, because the questionnaire told them what matched their answers, not what the house would stand behind. Two advisors stop using it, on the grounds that it makes a made-to-order appointment feel like a form.";
+    figs=[["−9 min","appointment length"],["+2 pts","completion"],[pains+" of 4","observed pains addressed"]];
+  } else if (con === "copy"){
+    cls="poor"; pains=1;
+    grade="Committee review · shipped";
+    title="A rival's preview tool ships";
+    body="It is well built and it photographs beautifully in the press release. Completion does not move. The tool was designed for a house with a smaller range and a different client, by a team that ran its own empathise stage and did not publish the findings. You bought the answer without the question.";
+    figs=[["No change","completion"],[pains+" of 4","observed pains addressed"],[state.days+" days","of "+BUDGET]];
+  } else {
+    cls="poor"; pains=1;
+    grade="Committee review · shipped";
+    title="The configurator gets a three-dimensional viewer";
+    body="Clients can now turn the finished bag on screen, and it is handsome. Completion rises by three points. Clients still photograph the swatch card and send it to someone before deciding, because what they were missing was not a better picture of the bag. It was a view on whether the combination was right.";
+    figs=[["+3 pts","completion"],[pains+" of 4","observed pains addressed"],[state.days+" days","of "+BUDGET]];
+  }
+
+  $("v-box").className = "verdict "+cls;
+  $("v-grade").textContent = grade;
+  $("v-title").textContent = title;
+  $("v-body").textContent = body;
+  $("v-figs").innerHTML = figs.map(function(f){ return '<div class="fig"><span class="n">'+f[0]+'</span><span class="l">'+f[1]+'</span></div>'; }).join("");
+  $("v-wall").innerHTML = wallHTML();
+
+  $("v-review").innerHTML = state.picks.map(function(p,i){
+    var m;
+    if (p.idx === BEST[i]) m = '<span class="mark ok">kept</span>';
+    else if (PARTIAL[i].indexOf(p.idx) > -1) m = '<span class="mark part">partial</span>';
+    else m = '<span class="mark no">cost you</span>';
+    return '<div class="rrow"><span class="n">'+(i+1)+'</span><span class="b">' +
+      '<span class="st">Stage '+(i+1)+' · '+p.stage+' · '+esc(p.method)+' · '+p.days+(p.days===1?' day':' days')+'</span>' +
+      '<span class="ch">'+p.tag+'. '+esc(p.text)+'</span>' +
+      '<span class="mi">'+esc(p.purpose)+'</span></span>'+m+'</div>';
+  }).join("");
+
+  var eText = ["Read the analytics. Indirect evidence about where people stopped, not why.",
+               "Asked sixty clients what would help. Stated preferences only, all of them naming solutions.",
+               "Interviewed the advisors. First hand, but filtered through people with a theory of their own.",
+               "Observed eighteen real sessions. Four pains and three gains, all observed."][e0];
+  var dText = ["A statement with the solution already inside it. The complaint promoted to a specification.",
+               "A statement broad enough to justify any idea, so it could not be used to choose.",
+               "A usable statement, traceable to an observed pain.",
+               "A statement written from the maison's side. Satisfiable by hurrying the client."];
+  var dIdx = state.hmwIdx === 2 ? 2 : (state.hmwIdx === 0 ? 0 : (state.hmwIdx === 3 ? 3 : 1));
+  var iText = ["No divergence. One option arrived from a person rather than from a process.",
+               "Divergence held open, then scored against the statement and dot voted.",
+               "No divergence. One option arrived from a person rather than from a process.",
+               "Other houses' answers to problems you have not seen inside."][state.picks[2].idx];
+  var pText = ["Production build. An expensive answer to a question nobody had checked.",
+               "Paper prototype. Comprehension tested, behaviour not.",
+               "Internal role-play. Tested on the one group guaranteed to behave unlike your clients.",
+               "Wizard of Oz. Forty real appointments, no code written."][proto];
+  var tText = ["Creative review. Opinion, not evidence, and nothing to send you back with.",
+               "Silent observation through eight appointments. Findings you could act on.",
+               "Blind release. The data arrives after the decision it was meant to inform.",
+               "Controlled comparison. A defensible result, with no explanation attached to it."][test];
+  var trail = [["Empathise",eText],["Define",dText[dIdx]],["Ideate",iText],["Prototype",pText],["Test",tText]];
+  $("v-trail").innerHTML = trail.map(function(t){ return '<div><span class="t">'+t[0]+'</span><span>'+esc(t[1])+'</span></div>'; }).join("");
+
+  var missed = [];
+  if (e0 !== 3) missed.push("<strong>The four pains you never recorded.</strong> Every client asks the advisor what she would choose, most within two minutes. They worry about how the combination will look to other people. Nothing tells them a combination is finished, so choosing never stops. And they photograph the swatch card to send to someone else, then leave without ordering.");
+  if (state.hmwIdx !== 2) missed.push("<strong>The statement you did not reach.</strong> How might we let a client see that a combination is one the house would stand behind, without taking choice away? It contradicts what clients asked for, which is why only observation could produce it.");
+  if (con !== "selections") missed.push("<strong>The concept you did not find.</strong> A short set of combinations signed off by the atelier, shown first, with the full range still there behind them, and each one saveable to send to someone else.");
+  if (proto !== 3) missed.push("<strong>The experiment you did not run.</strong> Forty clients, two weeks, a printed card and an advisor. No code. It answers the only open question: does an endorsement from the house let a client stop choosing?");
+  if (test !== 1) missed.push("<strong>The eight appointments you did not sit through.</strong> Two clients hesitate at the same moment, which no presentation and no split test would have shown you.");
+  if (!missed.length) missed.push("You worked the stages in order and took the evidence-led route at each one. Ask someone at your table who cut the range what made that feel like the safer decision at the time.");
+  $("v-missed-in").innerHTML = missed.map(function(m){ return "<p>"+m+"</p>"; }).join("");
+  $("v-missed").open = true;
+}
+
+function toBrief(){
+  reset();
+  $("s-result").hidden = true;
+  $("s-play").hidden = true;
+  $("s-brief").hidden = false;
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+$("start").addEventListener("click", function(){
+  reset(); $("s-brief").hidden = true; $("s-play").hidden = false;
+  renderStage(); window.scrollTo({top:0,behavior:"smooth"});
+});
+$("again").addEventListener("click", toBrief);
+reset();
+
+</script>
+
+</body></html>
